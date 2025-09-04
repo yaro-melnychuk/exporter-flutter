@@ -1,0 +1,94 @@
+import 'package:flutter/material.dart';
+
+{[ let brand = ds.currentBrand() /]}
+{[ const colorTokensTree = ds.tokenGroupTreeByType("Color", brand.id) /]}
+/// Generic color extension that can be used with any theme
+/// All themes should register the same color tokens but with different values
+@immutable
+class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
+  const AppColorsExtension({
+{[ traverse colorTokensTree property subgroups into colorTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(colorTokenGroup) /]}
+  {[ const colorTokenInGroups = ds.tokensByGroupId(colorTokenGroup.id) /]}
+  {[ if (colorTokenInGroups.length > 0) ]}
+    // {{ colorTokenGroup.name }} colors
+  {[/]}
+  {[ for colorToken in colorTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, colorToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    required this.{{ fullTokenName }},
+  {[/]}
+{[/]}
+  });
+
+{[ traverse colorTokensTree property subgroups into colorTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(colorTokenGroup) /]}
+  {[ const colorTokenInGroups = ds.tokensByGroupId(colorTokenGroup.id) /]}
+  {[ if (colorTokenInGroups.length > 0) ]}
+  // {{ colorTokenGroup.name }} colors
+  {[/]}
+  {[ for colorToken in colorTokenInGroups ]}
+  {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, colorToken.name) /]}
+  {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+  {[ if (colorToken.description && colorToken.description !== "") ]}
+{{ createDocumentationComment(colorToken.description, "  ") }}
+  {[/]}
+  final Color {{ fullTokenName }};
+  {[/]}
+
+{[/]}
+  @override
+  AppColorsExtension copyWith({
+{[ traverse colorTokensTree property subgroups into colorTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(colorTokenGroup) /]}
+  {[ const colorTokenInGroups = ds.tokensByGroupId(colorTokenGroup.id) /]}
+  {[ if (colorTokenInGroups.length > 0) ]}
+    // {{ colorTokenGroup.name }} colors
+  {[/]}
+  {[ for colorToken in colorTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, colorToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    Color? {{ fullTokenName }},
+  {[/]}
+{[/]}
+  }) => AppColorsExtension(
+{[ traverse colorTokensTree property subgroups into colorTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(colorTokenGroup) /]}
+  {[ const colorTokenInGroups = ds.tokensByGroupId(colorTokenGroup.id) /]}
+  {[ if (colorTokenInGroups.length > 0) ]}
+    // {{ colorTokenGroup.name }} colors
+  {[/]}
+  {[ for colorToken in colorTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, colorToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    {{ fullTokenName }}: {{ fullTokenName }} ?? this.{{ fullTokenName }},
+  {[/]}
+{[/]}
+  );
+
+  @override
+  AppColorsExtension lerp(AppColorsExtension? other, double t) {
+    if (other is! AppColorsExtension) {
+      return this;
+    }
+    return AppColorsExtension(
+{[ traverse colorTokensTree property subgroups into colorTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(colorTokenGroup) /]}
+  {[ const colorTokenInGroups = ds.tokensByGroupId(colorTokenGroup.id) /]}
+  {[ if (colorTokenInGroups.length > 0) ]}
+      // {{ colorTokenGroup.name }} colors
+  {[/]}
+  {[ for colorToken in colorTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, colorToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+      {{ fullTokenName }}: Color.lerp({{ fullTokenName }}, other.{{ fullTokenName }}, t)!,
+  {[/]}
+{[/]}
+    );
+  }
+}
+
+/// Extension to easily access current theme colors from BuildContext
+extension AppColorsContext on BuildContext {
+  AppColorsExtension get appColors => Theme.of(this).extension<AppColorsExtension>()!;
+}

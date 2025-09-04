@@ -1,0 +1,95 @@
+import 'dart:ui' show lerpDouble;
+import 'package:flutter/material.dart';
+
+{[ let brand = ds.currentBrand() /]}
+{[ const measureTokensTree = ds.tokenGroupTreeByType("Measure", brand.id) /]}
+/// Generic dimensions extension that can be used with any theme
+/// All themes should register the same dimension tokens but with different values
+@immutable
+class AppDimensionsExtension extends ThemeExtension<AppDimensionsExtension> {
+  const AppDimensionsExtension({
+{[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
+  {[ const measureTokenInGroups = ds.tokensByGroupId(measureTokenGroup.id) /]}
+  {[ if (measureTokenInGroups.length > 0) ]}
+    // {{ measureTokenGroup.name }} dimensions
+  {[/]}
+  {[ for measureToken in measureTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    required this.{{ fullTokenName }},
+  {[/]}
+{[/]}
+  });
+
+{[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
+  {[ const measureTokenInGroups = ds.tokensByGroupId(measureTokenGroup.id) /]}
+  {[ if (measureTokenInGroups.length > 0) ]}
+  // {{ measureTokenGroup.name }} dimensions
+  {[/]}
+  {[ for measureToken in measureTokenInGroups ]}
+  {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
+  {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+  {[ if (measureToken.description && measureToken.description !== "") ]}
+{{ createDocumentationComment(measureToken.description, "  ") }}
+  {[/]}
+  final double {{ fullTokenName }};
+  {[/]}
+
+{[/]}
+  @override
+  AppDimensionsExtension copyWith({
+{[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
+  {[ const measureTokenInGroups = ds.tokensByGroupId(measureTokenGroup.id) /]}
+  {[ if (measureTokenInGroups.length > 0) ]}
+    // {{ measureTokenGroup.name }} dimensions
+  {[/]}
+  {[ for measureToken in measureTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    double? {{ fullTokenName }},
+  {[/]}
+{[/]}
+  }) => AppDimensionsExtension(
+{[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
+  {[ const measureTokenInGroups = ds.tokensByGroupId(measureTokenGroup.id) /]}
+  {[ if (measureTokenInGroups.length > 0) ]}
+    // {{ measureTokenGroup.name }} dimensions
+  {[/]}
+  {[ for measureToken in measureTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    {{ fullTokenName }}: {{ fullTokenName }} ?? this.{{ fullTokenName }},
+  {[/]}
+{[/]}
+  );
+
+  @override
+  AppDimensionsExtension lerp(AppDimensionsExtension? other, double t) {
+    if (other is! AppDimensionsExtension) {
+      return this;
+    }
+    return AppDimensionsExtension(
+{[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
+  {[ const measureTokenInGroups = ds.tokensByGroupId(measureTokenGroup.id) /]}
+  {[ if (measureTokenInGroups.length > 0) ]}
+      // {{ measureTokenGroup.name }} dimensions
+  {[/]}
+  {[ for measureToken in measureTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+      {{ fullTokenName }}: lerpDouble({{ fullTokenName }}, other.{{ fullTokenName }}, t)!,
+  {[/]}
+{[/]}
+    );
+  }
+}
+
+/// Extension to easily access current theme dimensions from BuildContext
+extension AppDimensionsContext on BuildContext {
+  AppDimensionsExtension get appDimensions => Theme.of(this).extension<AppDimensionsExtension>()!;
+}

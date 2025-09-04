@@ -1,10 +1,11 @@
-import 'package:resilience_design_system_flutter/src/base_theme_dimensions.dart';
+import 'package:resilience_design_system_flutter/src/app_dimensions_extension.dart';
 
 {[ let brand = ds.currentBrand() /]}
 {[ const measureTokensTree = ds.tokenGroupTreeByType("Measure", brand.id) /]}
-/// {{ brand.name }} dimension values
-class {{ brand.name }}Dimensions {
-  {{ brand.name }}Dimensions._();
+/// Abstract base class that defines the dimensions contract for all themes
+/// Any theme implementation should extend this class and provide concrete dimension values
+abstract class BaseThemeDimensions {
+  const BaseThemeDimensions();
 
 {[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
   {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
@@ -18,24 +19,22 @@ class {{ brand.name }}Dimensions {
   {[ if (measureToken.description && measureToken.description !== "") ]}
 {{ createDocumentationComment(measureToken.description, "  ") }}
   {[/]}
-  static const double {{ fullTokenName }} = {[ inject "export_measure_value" context measureToken.value /]};
+  double get {{ fullTokenName }};
   {[/]}
-
 {[/]}
-}
 
-/// {{ brand.name }} theme dimensions that implement the BaseThemeDimensions contract
-class {{ brand.name }}ThemeDimensions extends BaseThemeDimensions {
-  const {{ brand.name }}ThemeDimensions();
-
+  AppDimensionsExtension toAppDimensionsExtension() => AppDimensionsExtension(
 {[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
   {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
   {[ const measureTokenInGroups = ds.tokensByGroupId(measureTokenGroup.id) /]}
+  {[ if (measureTokenInGroups.length > 0) ]}
+    // {{ measureTokenGroup.name }} dimensions
+  {[/]}
   {[ for measureToken in measureTokenInGroups ]}
-  {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
-  {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
-  @override
-  double get {{ fullTokenName }} => {{ brand.name }}Dimensions.{{ fullTokenName }};
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    {{ fullTokenName }}: {{ fullTokenName }},
   {[/]}
 {[/]}
+  );
 }

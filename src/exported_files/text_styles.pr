@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-
-class AppTextStyles {
+import 'package:resilience_design_system_flutter/src/base_theme_text_styles.dart';
 
 {[ let brand = ds.currentBrand() /]}
 {[ const typographyTokensTree = ds.tokenGroupTreeByType("Typography", brand.id) /]}
+/// {{ brand.name }} text style values
+class {{ brand.name }}TextStyles {
+  {{ brand.name }}TextStyles._();
+
 {[ traverse typographyTokensTree property subgroups into typographyTokenGroup ]}
   {[ let fullTokenGroupPath = createFullTokenGroupPath(typographyTokenGroup) /]}
   {[ const typographyTokenInGroups = ds.tokensByGroupId(typographyTokenGroup.id) /]}
+  {[ if (typographyTokenInGroups.length > 0) ]}
+  // {{ typographyTokenGroup.name }} styles
+  {[/]}
   {[ for typographyToken in typographyTokenInGroups ]}
   {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, typographyToken.name) /]}
   {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
@@ -51,8 +57,23 @@ class AppTextStyles {
     {[/]}
     leadingDistribution: TextLeadingDistribution.even,
   );
+  {[/]}
 
+{[/]}
+}
+
+/// {{ brand.name }} theme text styles that implement the BaseThemeTextStyles contract
+class {{ brand.name }}ThemeTextStyles extends BaseThemeTextStyles {
+  const {{ brand.name }}ThemeTextStyles();
+
+{[ traverse typographyTokensTree property subgroups into typographyTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(typographyTokenGroup) /]}
+  {[ const typographyTokenInGroups = ds.tokensByGroupId(typographyTokenGroup.id) /]}
+  {[ for typographyToken in typographyTokenInGroups ]}
+  {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, typographyToken.name) /]}
+  {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+  @override
+  TextStyle get {{ fullTokenName }} => {{ brand.name }}TextStyles.{{ fullTokenName }};
   {[/]}
 {[/]}
-  AppTextStyles._();
 }

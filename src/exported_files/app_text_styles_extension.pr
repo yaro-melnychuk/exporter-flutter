@@ -1,0 +1,94 @@
+import 'package:flutter/material.dart';
+
+{[ let brand = ds.currentBrand() /]}
+{[ const textStyleTokensTree = ds.tokenGroupTreeByType("Typography", brand.id) /]}
+/// Generic text styles extension that can be used with any theme
+/// All themes should register the same text style tokens but with different values
+@immutable
+class AppTextStylesExtension extends ThemeExtension<AppTextStylesExtension> {
+  const AppTextStylesExtension({
+{[ traverse textStyleTokensTree property subgroups into textStyleTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(textStyleTokenGroup) /]}
+  {[ const textStyleTokenInGroups = ds.tokensByGroupId(textStyleTokenGroup.id) /]}
+  {[ if (textStyleTokenInGroups.length > 0) ]}
+    // {{ textStyleTokenGroup.name }} styles
+  {[/]}
+  {[ for textStyleToken in textStyleTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, textStyleToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    required this.{{ fullTokenName }},
+  {[/]}
+{[/]}
+  });
+
+{[ traverse textStyleTokensTree property subgroups into textStyleTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(textStyleTokenGroup) /]}
+  {[ const textStyleTokenInGroups = ds.tokensByGroupId(textStyleTokenGroup.id) /]}
+  {[ if (textStyleTokenInGroups.length > 0) ]}
+  // {{ textStyleTokenGroup.name }} styles
+  {[/]}
+  {[ for textStyleToken in textStyleTokenInGroups ]}
+  {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, textStyleToken.name) /]}
+  {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+  {[ if (textStyleToken.description && textStyleToken.description !== "") ]}
+{{ createDocumentationComment(textStyleToken.description, "  ") }}
+  {[/]}
+  final TextStyle {{ fullTokenName }};
+  {[/]}
+
+{[/]}
+  @override
+  AppTextStylesExtension copyWith({
+{[ traverse textStyleTokensTree property subgroups into textStyleTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(textStyleTokenGroup) /]}
+  {[ const textStyleTokenInGroups = ds.tokensByGroupId(textStyleTokenGroup.id) /]}
+  {[ if (textStyleTokenInGroups.length > 0) ]}
+    // {{ textStyleTokenGroup.name }} styles
+  {[/]}
+  {[ for textStyleToken in textStyleTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, textStyleToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    TextStyle? {{ fullTokenName }},
+  {[/]}
+{[/]}
+  }) => AppTextStylesExtension(
+{[ traverse textStyleTokensTree property subgroups into textStyleTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(textStyleTokenGroup) /]}
+  {[ const textStyleTokenInGroups = ds.tokensByGroupId(textStyleTokenGroup.id) /]}
+  {[ if (textStyleTokenInGroups.length > 0) ]}
+    // {{ textStyleTokenGroup.name }} styles
+  {[/]}
+  {[ for textStyleToken in textStyleTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, textStyleToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    {{ fullTokenName }}: {{ fullTokenName }} ?? this.{{ fullTokenName }},
+  {[/]}
+{[/]}
+  );
+
+  @override
+  AppTextStylesExtension lerp(AppTextStylesExtension? other, double t) {
+    if (other is! AppTextStylesExtension) {
+      return this;
+    }
+    return AppTextStylesExtension(
+{[ traverse textStyleTokensTree property subgroups into textStyleTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(textStyleTokenGroup) /]}
+  {[ const textStyleTokenInGroups = ds.tokensByGroupId(textStyleTokenGroup.id) /]}
+  {[ if (textStyleTokenInGroups.length > 0) ]}
+      // {{ textStyleTokenGroup.name }} styles
+  {[/]}
+  {[ for textStyleToken in textStyleTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, textStyleToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+      {{ fullTokenName }}: TextStyle.lerp({{ fullTokenName }}, other.{{ fullTokenName }}, t)!,
+  {[/]}
+{[/]}
+    );
+  }
+}
+
+/// Extension to easily access current theme text styles from BuildContext
+extension AppTextStylesContext on BuildContext {
+  AppTextStylesExtension get appTextStyles => Theme.of(this).extension<AppTextStylesExtension>()!;
+}

@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+import 'package:resilience_design_system_flutter/src/app_text_styles_extension.dart';
+
+{[ let brand = ds.currentBrand() /]}
+{[ const textStyleTokensTree = ds.tokenGroupTreeByType("Typography", brand.id) /]}
+/// Abstract base class that defines the text styles contract for all themes
+/// Any theme implementation should extend this class and provide concrete text style values
+abstract class BaseThemeTextStyles {
+  const BaseThemeTextStyles();
+
+{[ traverse textStyleTokensTree property subgroups into textStyleTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(textStyleTokenGroup) /]}
+  {[ const textStyleTokenInGroups = ds.tokensByGroupId(textStyleTokenGroup.id) /]}
+  {[ if (textStyleTokenInGroups.length > 0) ]}
+  // {{ textStyleTokenGroup.name }} styles
+  {[/]}
+  {[ for textStyleToken in textStyleTokenInGroups ]}
+  {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, textStyleToken.name) /]}
+  {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+  {[ if (textStyleToken.description && textStyleToken.description !== "") ]}
+{{ createDocumentationComment(textStyleToken.description, "  ") }}
+  {[/]}
+  TextStyle get {{ fullTokenName }};
+  {[/]}
+{[/]}
+
+  AppTextStylesExtension toAppTextStylesExtension() => AppTextStylesExtension(
+{[ traverse textStyleTokensTree property subgroups into textStyleTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(textStyleTokenGroup) /]}
+  {[ const textStyleTokenInGroups = ds.tokensByGroupId(textStyleTokenGroup.id) /]}
+  {[ if (textStyleTokenInGroups.length > 0) ]}
+    // {{ textStyleTokenGroup.name }} styles
+  {[/]}
+  {[ for textStyleToken in textStyleTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, textStyleToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    {{ fullTokenName }}: {{ fullTokenName }},
+  {[/]}
+{[/]}
+  );
+}

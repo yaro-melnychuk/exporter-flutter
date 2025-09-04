@@ -1,40 +1,60 @@
 {
     "blueprints": [
         {
-            "invoke": "borders.pr",
-            "write_to": "borders.dart"
+            "invoke": "base_theme_colors.pr",
+            "write_to": "lib/src/base_theme_colors.dart"
         },
         {
-            "invoke": "border_sides.pr",
-            "write_to": "border_sides.dart"
+            "invoke": "app_colors_extension.pr",
+            "write_to": "lib/src/app_colors_extension.dart"
+        },
+        {
+            "invoke": "base_theme_dimensions.pr",
+            "write_to": "lib/src/base_theme_dimensions.dart"
+        },
+        {
+            "invoke": "app_dimensions_extension.pr",
+            "write_to": "lib/src/app_dimensions_extension.dart"
+        },
+        {
+            "invoke": "base_theme_text_styles.pr",
+            "write_to": "lib/src/base_theme_text_styles.dart"
+        },
+        {
+            "invoke": "app_text_styles_extension.pr",
+            "write_to": "lib/src/app_text_styles_extension.dart"
         },
         {
             "invoke": "colors.pr",
-            "write_to": "colors.dart"
+            "write_to": "lib/src/themes/{{ ds.currentBrand().name.lowercased() }}/{{ ds.currentBrand().name.lowercased() }}_colors.dart"
         },
         {
             "invoke": "dimensions.pr",
-            "write_to": "dimensions.dart"
+            "write_to": "lib/src/themes/{{ ds.currentBrand().name.lowercased() }}/{{ ds.currentBrand().name.lowercased() }}_dimensions.dart"
+        },
+        {
+            "invoke": "borders.pr",
+            "write_to": "lib/src/themes/{{ ds.currentBrand().name.lowercased() }}/{{ ds.currentBrand().name.lowercased() }}_borders.dart"
+        },
+        {
+            "invoke": "border_sides.pr",
+            "write_to": "lib/src/themes/{{ ds.currentBrand().name.lowercased() }}/{{ ds.currentBrand().name.lowercased() }}_border_sides.dart"
         },
         {
             "invoke": "gradients.pr",
-            "write_to": "gradients.dart"
+            "write_to": "lib/src/themes/{{ ds.currentBrand().name.lowercased() }}/{{ ds.currentBrand().name.lowercased() }}_gradients.dart"
         },
         {
             "invoke": "radii.pr",
-            "write_to": "radii.dart"
+            "write_to": "lib/src/themes/{{ ds.currentBrand().name.lowercased() }}/{{ ds.currentBrand().name.lowercased() }}_radii.dart"
         },
         {
             "invoke": "shadows.pr",
-            "write_to": "shadows.dart"
+            "write_to": "lib/src/themes/{{ ds.currentBrand().name.lowercased() }}/{{ ds.currentBrand().name.lowercased() }}_shadows.dart"
         },
         {
             "invoke": "text_styles.pr",
-            "write_to": "text_styles.dart"
-        },
-        {
-            "invoke": "base_theme_colors.pr",
-            "write_to": "base_theme_colors.dart"
+            "write_to": "lib/src/themes/{{ ds.currentBrand().name.lowercased() }}/{{ ds.currentBrand().name.lowercased() }}_text_styles.dart"
         }
     ]
 }
