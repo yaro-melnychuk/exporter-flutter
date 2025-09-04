@@ -1,19 +1,93 @@
-class AppDimensions {
+import 'package:flutter/material.dart';
 
 {[ let brand = ds.currentBrand() /]}
 {[ const measureTokensTree = ds.tokenGroupTreeByType("Measure", brand.id) /]}
+@immutable
+class {{ brand.name }}Dimensions extends ThemeExtension<{{ brand.name }}Dimensions> {
+  const {{ brand.name }}Dimensions({
 {[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
   {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
   {[ const measureTokenInGroups = ds.tokensByGroupId(measureTokenGroup.id) /]}
+  {[ for measureToken in measureTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    required this.{{ fullTokenName }},
+  {[/]}
+{[/]}
+  });
+
+{[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
+  {[ const measureTokenInGroups = ds.tokensByGroupId(measureTokenGroup.id) /]}
+  {[ if (measureTokenInGroups.length > 0) ]}
+  // {{ measureTokenGroup.name }} dimensions
+  {[/]}
   {[ for measureToken in measureTokenInGroups ]}
   {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
   {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
   {[ if (measureToken.description && measureToken.description !== "") ]}
 {{ createDocumentationComment(measureToken.description, "  ") }}
   {[/]}
-  static const {{ fullTokenName }} = {[ inject "export_measure_value" context measureToken.value /]};
+  final double {{ fullTokenName }};
+  {[/]}
 
+{[/]}
+  static const {{ brand.name }}Dimensions _default = {{ brand.name }}Dimensions(
+{[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
+  {[ const measureTokenInGroups = ds.tokensByGroupId(measureTokenGroup.id) /]}
+  {[ for measureToken in measureTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    {{ fullTokenName }}: {[ inject "export_measure_value" context measureToken.value /]},
   {[/]}
 {[/]}
-  AppDimensions._();
+  );
+
+  @override
+  {{ brand.name }}Dimensions copyWith({
+{[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
+  {[ const measureTokenInGroups = ds.tokensByGroupId(measureTokenGroup.id) /]}
+  {[ for measureToken in measureTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+    double? {{ fullTokenName }},
+  {[/]}
+{[/]}
+  }) {
+    return {{ brand.name }}Dimensions(
+{[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
+  {[ const measureTokenInGroups = ds.tokensByGroupId(measureTokenGroup.id) /]}
+  {[ for measureToken in measureTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+      {{ fullTokenName }}: {{ fullTokenName }} ?? this.{{ fullTokenName }},
+  {[/]}
+{[/]}
+    );
+  }
+
+  @override
+  {{ brand.name }}Dimensions lerp({{ brand.name }}Dimensions? other, double t) {
+    if (other is! {{ brand.name }}Dimensions) {
+      return this;
+    }
+    return {{ brand.name }}Dimensions(
+{[ traverse measureTokensTree property subgroups into measureTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(measureTokenGroup) /]}
+  {[ const measureTokenInGroups = ds.tokensByGroupId(measureTokenGroup.id) /]}
+  {[ for measureToken in measureTokenInGroups ]}
+    {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, measureToken.name) /]}
+    {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+      {{ fullTokenName }}: lerpDouble({{ fullTokenName }}, other.{{ fullTokenName }}, t) ?? {{ fullTokenName }},
+  {[/]}
+{[/]}
+    );
+  }
+
+  static {{ brand.name }}Dimensions of(BuildContext context) {
+    return Theme.of(context).extension<{{ brand.name }}Dimensions>() ?? _default;
+  }
 }
