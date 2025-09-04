@@ -1,12 +1,18 @@
-import 'package:flutter/material.dart';
-
-class AppColors {
+import 'package:flutter/painting.dart';
+import 'package:resilience_design_system_flutter/src/base_theme_colors.dart';
 
 {[ let brand = ds.currentBrand() /]}
 {[ const colorTokensTree = ds.tokenGroupTreeByType("Color", brand.id) /]}
+/// {{ brand.name }} color scheme implementation
+class {{ brand.name }}Colors {
+  {{ brand.name }}Colors._();
+
 {[ traverse colorTokensTree property subgroups into colorTokenGroup ]}
   {[ let fullTokenGroupPath = createFullTokenGroupPath(colorTokenGroup) /]}
   {[ const colorTokenInGroups = ds.tokensByGroupId(colorTokenGroup.id) /]}
+  {[ if (colorTokenInGroups.count > 0) ]}
+  // {{ colorTokenGroup.name }} colors
+  {[/]}
   {[ for colorToken in colorTokenInGroups ]}
   {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, colorToken.name) /]}
   {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
@@ -14,8 +20,23 @@ class AppColors {
 {{ createDocumentationComment(colorToken.description, "  ") }}
   {[/]}
   static const {{ fullTokenName }} = {[ inject "export_color_value" context colorToken.value /]}; 
-  
+  {[/]}
+
+{[/]}
+}
+
+/// {{ brand.name }} theme colors that implement the BaseThemeColors contract
+class {{ brand.name }}ThemeColors extends BaseThemeColors {
+  const {{ brand.name }}ThemeColors();
+
+{[ traverse colorTokensTree property subgroups into colorTokenGroup ]}
+  {[ let fullTokenGroupPath = createFullTokenGroupPath(colorTokenGroup) /]}
+  {[ const colorTokenInGroups = ds.tokensByGroupId(colorTokenGroup.id) /]}
+  {[ for colorToken in colorTokenInGroups ]}
+  {[ const fullTokenPath = arrayConcat(fullTokenGroupPath, colorToken.name) /]}
+  {[ const fullTokenName = arrayJoin(fullTokenPath, " ").camelcased(false) /]}
+  @override
+  Color get {{ fullTokenName }} => {{ brand.name }}Colors.{{ fullTokenName }};
   {[/]}
 {[/]}
-  AppColors._();
 }
