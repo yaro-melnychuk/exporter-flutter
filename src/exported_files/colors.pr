@@ -10,7 +10,7 @@ class {{ brand.name }}Colors {
 {[ traverse colorTokensTree property subgroups into colorTokenGroup ]}
   {[ let fullTokenGroupPath = createFullTokenGroupPath(colorTokenGroup) /]}
   {[ const colorTokenInGroups = ds.tokensByGroupId(colorTokenGroup.id) /]}
-  {[ if (colorTokenInGroups.count > 0) ]}
+  {[ if (colorTokenInGroups.length > 0) ]}
   // {{ colorTokenGroup.name }} colors
   {[/]}
   {[ for colorToken in colorTokenInGroups ]}
